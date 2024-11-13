@@ -1,0 +1,24 @@
+1. Add Static Files path in settings.py & create a static folder where manage.py file is.
+- settings.py below STATIC_URL
+STATICFILES_DIRS = ['static/']
+
+
+
+2. Add a theme from startbootstrap.com
+- Download theme Shop Homepage
+- Save it in static directory.
+- Unzip it.
+- Copy all the files when unzipped, Cut and paste it "static" folder directly.
+- Move index.html in "templates" directory.
+- Rename index to home
+
+
+
+3.  Add static tag in home.html for Django to load static file
+- Home.html first line;
+{% load static %}
+
+- Convert references to Django static tag
+href="{% static 'css/styles.css' %}"
+src ="{% static '' %}"
+

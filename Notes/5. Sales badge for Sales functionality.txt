@@ -1,0 +1,35 @@
+1. Update models
+Product model
+#Add Sales stuff
+is_sale = models.BooleanField(default=False)
+sale_price = models.DeceimalField(default=0, decimal_places=2, max_digits=6)
+
+
+2. Make migrations
+
+
+3. From admin put an item on sale, and add a sale price.
+
+4. Reflect the sale on HTML
+home.html
+
+{% for product in products %}
+	{% if product.is_sale %}
+		SALE!! #Text for testing
+
+		- Copy the normal card and make changes 
+
+		<strike>{{ product.price }}</strike>
+		&nbsp;
+		${{product.sale_price}}
+
+
+		- Above product image
+		<div class="bage bg-light text-black position-absolute" style="top:0.5rem; right:0.5rem">Sale</div>
+		
+
+	{% else %}
+
+
+	{% endif %}
+

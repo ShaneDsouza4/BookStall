@@ -1,0 +1,71 @@
+
+1. Add a bunch of products with images in the products admin.
+
+
+
+
+
+
+
+2. Display products with images on Home Page.
+app (store) views.py
+
+- Import Product Model
+from .models import Product
+
+def home(request):
+	products = Product.objects.all() #Add a query to get all prodcuts
+	return render(request, 'home.html', {'products': products }
+
+
+
+
+
+
+
+
+
+3. Home.html
+Determine what code is making the boxes, by typing test in the divs.
+
+{{products}} #Add in HTML to see the queryset appear in HTML
+
+{% for product in products  %}
+
+	For image in the HTML "{{product.image.url}}" #Add url Django will give it
+	For Title {{ product.name }}
+	For Price ${{ product.price }}
+
+{% endfor %}
+
+
+4. Remove the static products listed in the HTML
+
+
+5. Run project
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 

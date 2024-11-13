@@ -1,0 +1,48 @@
+1. Create a Django Project (eCommerce)
+2. Create an app inside the project (store)
+
+3. Add the app (store) to settings.py INSTALLED_APPS array
+'store.apps.StoreConfig' OR 'store'
+
+4. Update urls.py to include urls that point to (store) app
+from Django.urls import path, include
+path('', include('store.urls') )
+
+
+5. Create and configure urls.py file in app (store)
+- Copy the structure from the project urls.py
+
+- Add the views import to access the views
+from . import views
+
+- Link the respected view in the path
+urlpatterns = [
+	path("", views.home, name="home")
+]
+
+
+6. Create home view in app (store) views.py
+
+def home(request):
+	return render(request, 'home.html', {})
+
+7. Create a template 'home.html' in the templates folder in the store project
+
+8. Run manage.py
+makemigrations
+migrate
+manage.py runserver
+
+
+9. Visit localhost:8000
+
+
+
+
+
+
+
+
+
+
+
