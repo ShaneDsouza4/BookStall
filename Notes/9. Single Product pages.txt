@@ -1,0 +1,63 @@
+1. Create URL
+Number of product with primary key of the product
+path('product/<int:pk>/', views.product, name='product')
+
+2. Create View
+def product(request, pk):
+    productFetched = Product.objects.get(id=pk) #Gets specific product
+    return render(request, 'product.html', {'product': productFetched})
+
+3.Create HTML page
+Create dummy for now
+
+4. Make changes in Home.html product view button
+ href="{% url 'product' product.id %}">View Product</a>
+
+5. Test 
+When click view product we will get;
+http://localhost:8000/product/3/
+
+6. Add Bootstrap Horizontal Card in the product.html
+<div class="container">
+    <br/>
+
+        <div class="card mb-3" >
+            <div class="row g-0">
+                <div class="col-md-4">
+                    <img src="{{product.image.url}}" class="img-fluid rounded-start" alt="...">
+                </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <center>
+                        <h5 class="card-title">{{ product.name}}</h5>
+                        <p class="card-text justified">{{ product.description }}</p>
+
+
+                        {% if product.is_sale %}
+                            <div class="text-center">
+                                    <h5 class="fw-bolder">Sale Item</h5>
+                                    <!-- Product price-->
+                                    <strike>${{ product.price }}</strike>
+                                    ${{ product.sale_price }}
+                                </div>
+                        {% else %}
+                            <div class="text-center">
+                                    <!-- Product price-->
+                                    ${{ product.price }}
+                            </div>
+                        {% endif %}
+                    
+                    
+                        <br>
+
+
+                        <a href="{% url 'home' %}" class="btn btn-secondary">Home</a>
+                    </center>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div>
