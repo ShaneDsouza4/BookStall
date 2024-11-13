@@ -1,0 +1,97 @@
+1. Login page
+- View
+- Template
+- Url
+
+1. Create Urls for Login And Logout
+path('login/', views.login_user, name="login")
+path('logout/', views.logout_user, name="logout")
+
+2. Create login.html page
+
+
+3. Create view
+def login_user(request):
+	return render(request, "login.html")
+
+def logout_user(request):
+    logout(request)
+    messages.success(request, 'You have been logged out.')
+    return redirect('home')
+
+4. Add import in the views.py
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
+
+
+5. Add navbar links
+- Show logout only if logged in
+
+{% if user.is_authenticated %}
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+{% else %}
+             <li><a href="{% url 'login' %}">Login</a></li>
+{% endif %}
+
+6. Add HTML Bootstrap form
+- make sure to add "name" attribute 
+- Method
+- Action
+- Csrf Token
+
+<form method="POST" action="{% url 'login' %}">
+  {% csrf_token %}
+  <div>
+    <input type="text" class="form-control" name="username" placeholder="Enter Username">
+  </div>
+
+  <div>
+    <input type="password" class="form-control" name="password" placeholder="Enter Password">
+  </div>
+
+  <button type="submit" class="btn btn-secondary">Login</button>
+
+</form>
+
+8. Configure the login view
+def login_user(request):
+    if request.method == 'POST': #Submitting form
+        username = request.POST['username'] #On form name is username
+        password = request.POST['password'] #On form name is password
+
+        #Need to authenticate using django authenticate system
+        user = authenticate(request, username=username, password=password)
+
+        # If form is not empty, log them in
+        if user is not None:
+            login(request, user)
+            messages.success(request, 'You are now logged in')
+            return redirect('home')
+        else:
+            messages.success(request, 'Invalid username or password')
+            return redirect('login')
+    else: #They didn't fill the form, show webpage
+        return render(request, 'login.html')
+
+
+9. Create Message code in base.html below navbar
+	<!-- Messages-->
+        {% if messages %}
+
+            {% for message in messages %}
+
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+
+10. Test the logout and then visit /admin to verify
+
+
+
+
