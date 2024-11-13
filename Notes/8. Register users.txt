@@ -1,0 +1,48 @@
+1. Create base html, view, url and add to navbar for Register
+
+2. Import in views.py
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
+from django import forms
+from .forms import SignUpForm
+
+3. Create a form in the app (store)
+forms.py
+
+jango.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
+from django import forms
+
+class SignUpForm(UserCreationForm):
+    email = forms.EmailField(label="Email")
+    first_name = forms.CharField(label="First name")
+    last_name = forms.CharField(label="Last Name", max_length=100)
+    username = forms.CharField(label="Username", max_length=150, required=True)
+
+    class Meta:
+        model = User
+        fields = ('username', 'password1', 'password2')
+
+
+4. Configure the views.py
+def register_user(request):
+    form = SignUpForm()
+
+    if request.method == 'POST':
+        form = SignUpForm(request.POST) #Take all inputs from webpage, and put in signup form
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password1']
+
+            #Login User
+            user = authenticate(username=username, password=password)
+            login(request, user) #here login occurs
+            messages.success(request, 'Registration Success')
+            return redirect('home')
+        else:
+            print("Form errors:", form.errors)
+            messages.success(request, 'Registration Failed')
+            return redirect('register')
+    else:
+        return render(request, 'register.html', {'form': form}) #pass the form
