@@ -4,7 +4,7 @@ import datetime
 
 # Category Model
 class Category(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=500)
 
     def __str__(self):
         return self.name

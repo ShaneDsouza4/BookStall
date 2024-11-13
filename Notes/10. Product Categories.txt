@@ -1,0 +1,41 @@
+1. Add some more categories from the admin panel.
+
+Like;
+- Self Development Books
+- Marketing Books
+
+2. Add Products
+Separate Category page
+
+3. Create URL
+path('category/<str:foo/>', views.category, name='category'),
+
+4. Create View for Category
+def category(request, foo):
+    foo = foo.replace('-', '') #replace - with spaces
+
+    #Fetch category from url
+    try:
+        #Search category
+        category = Category.objects.get(name=foo)
+
+        #Get products with the category
+        products = Product.objects.filter(category=category)
+
+        return render(request, 'category.html', {"products": products, 'category': category}, )
+    except:
+        messages.success(request, 'Category does not exist')
+        return redirect('home')
+
+5. Create category.html
+Copy everything that is in the home page.+
+
+Just update;
+<h1 class="display-4 fw-bolder">{{ category }}</h1>
+
+6. Update navbar passing the foo url parameter
+<li><a href="{% url 'home' %}">All Products</a></li>
+<li><a href="{% url 'category' 'self-development-books' %}">Self Development Books</a></li>
+<li><a href="{% url 'category' 'marketing-books' %}">Marketing Books</a></li>
+
+
