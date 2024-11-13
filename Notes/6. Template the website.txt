@@ -1,0 +1,55 @@
+1. Add and configure navbar.html in templates folder
+- Cut paste the <nav></nav> from the home.html
+
+- Replace with {% include 'navbar.html' %}
+
+
+2. Add base.html in templates folder
+
+In base.html
+Copy whole home.html and replace what we don't need.
+Like footer.
+
+Where the navbar is called, below add
+{% include 'navbar.html' %}
+
+{% block content %}
+
+What is different in the remaining pages will be pulled and displayed here.
+
+{% endblock %}
+
+What we don't need as base, paste in the home.html
+
+
+3.Extend the home.html into base.html file. 
+{% extends 'base.html' %}  #Add at top of code
+
+Remove what is in the base.html
+
+- Wrap all home.html content in
+
+{% block content %}
+
+
+{% endblock %}
+
+4. Create an about.html to see if it works.
+Follow the 3 step process
+- HTML
+- View
+- URL
+
+
+5. Update the about like in navbar
+{% url 'about' %}
+
+
+
+
+
+
+
+
+
+
