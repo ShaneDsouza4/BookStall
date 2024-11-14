@@ -1,0 +1,40 @@
+1.  Add app to project & reference in settings.py file
+> startapp cart
+
+2. Add urls.py to app (cart)
+
+3. Add path in project urls.py
+path('cart/', include('cart.urls')),
+
+
+4. Urls we need;
+- Cart Page, to see what's in the cart.
+- Add
+- Delete
+- Update
+
+urlpatterns = [
+    path('', views.cart_summary, name='cart_summary'),
+    path('add/', views.cart_add, name='cart_add'),
+    path('delete/', views.cart_delete, name='cart_delete'),
+    path('update/', views.cart_update, name='cart_update'),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
+5. Create the views.py
+def cart_summary(request):
+    return render(request, "cart_summary.html", {})
+
+
+6. Create templates folder in cart app and create file cart_summary.html
+Copy the home page
+Shopping Cart, View Your cart, remove the products
+
+7. Link the cart page to navbar
+<form class="d-flex">
+                        <a class="btn btn-outline-dark" href="{% url 'cart_summary' %}">
+                            <i class="bi-cart-fill me-1"></i>
+                            Cart
+                            <span class="badge bg-dark text-white ms-1 rounded-pill">0</span>
+                        </a>
+                    </form>
