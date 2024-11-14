@@ -1,17 +1,24 @@
-{% extends 'base.html' %}
+1. Create function in session that allows to see what's in the cart.
+#Get cart details
+    def get_prods(self):
 
-{% block content %}
+        #Get ids from cart
+        product_ids = self.cart.keys() #Keys because product id is getting added to cart via the add functiona above. Set up as dictionary
 
-        <header class="bg-dark py-5">
-            <div class="container px-4 px-lg-5 my-5">
-                <div class="text-center text-white">
-                    <h1 class="display-4 fw-bolder">Cart Summart</h1>
-                    <p class="lead fw-normal text-white-50 mb-0">View Your Cart</p>
-                </div>
-            </div>
-        </header>
-        <!-- Section-->
-        <div class="container">
+        # Search and return products in DB via ids and Product model
+        products = Product.objects.filter(id_in=product_ids)
+        return products
+
+2. Configure the cart_summary that is in the views.py
+def cart_summary(request):
+    #Get the cart
+    cart = Cart(request)
+    cart_products = cart.get_prods
+    return render(request, "cart_summary.html", {"cart_products":cart_products})
+
+3. Update cart.html
+- Copy the horizontal card from product.html and use in cart.html
+<div class="container">
             {% if cart_products %}
             {% for product in cart_products %}
                 <br>
@@ -63,5 +70,3 @@
                 <br><br><br>
             {% endif %}
         </div>
-
-{% endblock %}

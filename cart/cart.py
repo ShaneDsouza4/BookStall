@@ -1,5 +1,8 @@
 from django.contrib.sites import requests
 
+from store.models import Product
+
+
 class Cart():
     def __init__(self, request): # initialize class, Req is user request
         self.session = request.session
@@ -29,3 +32,16 @@ class Cart():
     #Filter the length
     def __len__(self):
         return len(self.cart)
+
+    #Get cart details
+    def get_prods(self):
+
+        #Get ids from cart
+        product_ids = self.cart.keys() #Keys because product id is getting added to cart via the add functiona above. Set up as dictionary
+
+        # Search and return products in DB via ids and Product model
+        products = Product.objects.filter(id__in=product_ids)
+        return products
+
+
+
