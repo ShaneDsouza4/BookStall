@@ -25,3 +25,7 @@ class Cart():
             self.cart[product_id] = {'price': str(product.price)} #Will be added in session when decoded
 
         self.session.modified = True
+
+    #Filter the length
+    def __len__(self):
+        return len(self.cart)

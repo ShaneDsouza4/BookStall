@@ -1,0 +1,35 @@
+1. In navbar, the cart number will be updated.
+- Give the span an id
+
+<span class="badge bg-dark text-white ms-1 rounded-pill" id="cart_qantity">0</span>
+
+2. Create another function in cart.py class to keep track of the quantity
+#Filter the length
+    def __len__(self):
+        return len(self.cart)
+
+context_processor will allow to pass on any page.
+
+3. In views.py 
+
+Comment out the json response line and then;
+
+#Get cart quantity
+cart_quantity = cart.__len__()
+response = JsonResponse({"qty": cart_quantity})
+
+
+4. Update the button count in product.html
+In the product.html when button is clicked;
+
+success: function(json){
+                console.log(json)
+                //Update the cart_quantity
+                document.getElementById('cart_quantity').textContent = json.qty
+            },
+
+
+5. Update the 0 to use the length filter as we used __len in the cart.py class
+<span class="badge bg-dark text-white ms-1 rounded-pill" id="cart_quantity">{{ cart|length }}</span>
+
+6. To Test delete the session id and cart will go back to 0

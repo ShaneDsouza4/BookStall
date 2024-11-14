@@ -72,6 +72,8 @@
             },
             success: function(json){
                 console.log(json)
+                //Update the cart_quantity
+                document.getElementById('cart_quantity').textContent = json.qty
             },
             error: function (xhr, errmsg, err){
                 

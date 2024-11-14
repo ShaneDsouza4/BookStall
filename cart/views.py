@@ -26,8 +26,12 @@ def cart_add(request):
         #Save to session
         cart.add(product=product) #Whole model object will be added
 
+        #Get cart quantity
+        cart_quantity = cart.__len__()
+
         #Return JSON response
-        response = JsonResponse({"Product Name ": product.name}) #Will reference Product Model name
+        #response = JsonResponse({"Product Name ": product.name}) #Will reference Product Model name
+        response = JsonResponse({"qty": cart_quantity})
         return response
 
 def cart_delete(request):
