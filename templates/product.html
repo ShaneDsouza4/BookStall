@@ -16,6 +16,7 @@
                     <center>
                         <h5 class="card-title">{{ product.name}}</h5>
                         <p class="card-text justified">{{ product.description }}</p>
+                        
 
 
                         {% if product.is_sale %}
@@ -29,6 +30,7 @@
                             <div class="text-center">
                                     <!-- Product price-->
                                     ${{ product.price }}
+                                <br/>
                             </div>
                         {% endif %}
                     
@@ -37,6 +39,12 @@
 
 
                         <a href="{% url 'home' %}" class="btn btn-secondary">Home</a>
+                        <button
+                                type="button"
+                                class="btn btn-secondary"
+                                value="{{ product.id }}"
+                                id="add-cart"
+                        >Add to Cart</button>
                     </center>
 
 
@@ -46,4 +54,29 @@
     </div>
 
     </div>
+
+    <script>
+    //Check if button is pressed
+    $(document).on('click', '#add-cart', function(e){
+        //Check button was actually pressed
+        e.preventDefault();
+        
+        //Ajax will allow to send to backend, without refreshing page
+        $.ajax({
+            type: 'POST',
+            url: '{% url 'cart_add' %}',
+            data: {
+                product_id: $('#add-cart').val(),
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                action: 'post'
+            },
+            success: function(json){
+                console.log(json)
+            },
+            error: function (xhr, errmsg, err){
+                
+            }
+        })
+    })
+    </script>
 {% endblock %}

@@ -1,0 +1,105 @@
+1. Add Jquery to the app
+- Google search and go to jquery cdn
+- Click minified and copy the script
+- Paste just above </head> in base.html
+
+2. Add a button "Add to cart", on the product.html
+
+- First check if ID is being displayed
+ID: {{ product.id }}
+
+- Add a Add to cart button with id as will be usin jquery
+<button type="button" class="btn btn-secondary" value="{{ product.id }}" id="add-cart">Add to Cart</button>
+
+3. Add script in product.html before {% endblock %}
+
+<script>
+    //Check if button is pressed
+    $(document).on('click', '#add-cart', function(e){
+        //Check button was actually pressed
+        e.preventDefault();
+        
+        //Ajax will allow to send to backend, without refreshing page
+        $.ajax({
+            type: 'POST',
+            url: '{% url 'cart_add' %}',
+            data: {
+                product_id: $('#add-cart').val(),
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                action: 'post'
+            },
+            success: function(json){
+                console.log(json)
+            },
+            error: function (xhr, errmsg, err){
+                
+            }
+        })
+    })
+    </script>
+
+4. Create view in store app
+
+- Add imports
+from django.shortcuts import render, get_object_or_404, redirect
+from .cart import Cart #Cart Session
+from store.models import Product
+from django.http import JsonResponse
+
+
+
+
+def cart_add(request):
+    # Get the cart
+    cart = Cart(request)
+
+    #Test for Post
+    if request.POST.get('action') == 'post': #Lower case post is mentioned in the Ajax action
+
+        #Get stuff from AJAX
+        product_id = int(request.POST.get('product_id'))
+
+        #Search product in DB
+        product = get_object_or_404(Product, id=product_id)
+
+        #Save to session
+        cart.add(product=product) #Whole model object will be added
+
+        #Return JSON response
+        response = JsonResponse({"Product Name ": product.name}) #Will reference Product Model name
+        return response
+
+5. Add functionality in the cart.py class
+
+
+    def add(self, product):
+        product_id = str(product.id)
+
+        #Logic
+        if product_id in self.cart:
+            pass
+        else:
+            self.cart[product_id] = {'price': str(product.price)} #Cookie will keep track of product ID and Price
+            
+        self.session.modified = True
+
+
+6. Test
+- Click add to cart. Will show up in the console and network
+{"Product Name ": 'Atomic Habits'}
+
+
+7. Check if added to session
+from django.contrib.sessions.models import Session
+session_k = Session.objects.get(pk='paste sessionid from cookies')
+session_k.get_decoded()
+
+
+
+
+
+
+
+
+
+
