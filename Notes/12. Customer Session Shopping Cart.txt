@@ -1,0 +1,54 @@
+What a person done.
+Done via ID that stays as a cookie.
+
+
+1. In cart app create file cart.py
+
+2. Create a class Cart in cart.py
+from django.contrib.sites import requests
+
+class Cart():
+    def __init__(self, request): # initialize class, Req is user request
+        self.session = request.session
+
+        #Fetch current session key if exists
+        cart = self.session.get('session_key')
+
+        # If user is new, no session key and will be created
+        if 'session_key' not in request.session:
+            cart = self.session['session_key'] = {}
+
+        # Make sure shopping cart is available on all pages, and keep track
+        self.cart = cart
+
+        
+
+3. In cart app create file context_processors.py
+from .cart import Cart #Name of the Cart Class in cart.py
+
+# Creating context processor so our cart can work on all pages
+def cart(request):
+    # Return default data from our cart
+    return {'cart': Cart(request)} #From cart return the Cart Request
+
+4. Let Django know that context_processor exists in settings.py file 
+
+In TEMPLATES.OPTIONS.context_processors Add 'cart.context_processors.cart'
+
+
+
+5. Test
+Now we have the session for new users, keep track of session of old users.
+
+Inspect > Application > Cookies > sessionid (is the user session)
+In browser sessionid:"Paste sessionid"
+sessionid:'z00kd8tf6le0ae7odndh7sjdzqphlj86'
+
+In shell
+from Django.contrib.sessions.models import Session
+session_k = Session.objects.get(pk='pasetid')
+session_k.get_decoded()
+Can see the empty dictionary we created
+
+
+
