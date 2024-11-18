@@ -1,0 +1,95 @@
+1. Add a select box in product.html Below product price
+<div class="row justify-content-center">
+                        <div class="col-md-2">
+                            Quantity:
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-select form-select-sm" id="qty-cart">
+                                <option selected>Open this select menu</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                            </select>
+                        </div>
+                    </div>
+
+2. Add the qty in script
+product_id: $('#add-cart').val(),
+product_qty: $('#qty-cart option:selected').text(),
+
+3. In view.py add_cart
+
+- Add qty
+product_qty = int(request.POST.get('product_qty'))
+
+- Send as parameter
+ cart.add(product=product, quantity=product_qty)
+
+- Add the qty in the response
+response = JsonResponse({"qty": cart_quantity})
+
+4. In cart.py update
+product_qty = str(quantity)
+
+- Only add qty to the session
+self.cart[product_id] = int(product_qty)
+
+
+5. Test and see the session
+
+from django.contrib.sessions.models import Session
+session_k = Session.objects.get(pk='le4o066im24jcv9m0mtmxigqlwgj63sz')
+session_k.get_decoded()
+
+
+Will be able to see the session key;
+{'session_key': {'3': 1, '5': 2}}
+
+
+6. Show updated quantity in dropdown at product_summary.html , fetching from sessions
+
+- Place the dropdown code in the product summary page
+Below product price
+
+
+- Add variable and key to the views def cart_summary where the cart summary page is rendered
+quantities = cart.get_quants
+ return render(request, "cart_summary.html", {"cart_products":cart_products, "quantities":quantities})
+
+
+7. Add the function get_quants in cart.py
+
+# Return cart for quantities
+    def get_quants(self):
+        quantitites = self.cart
+        return quantitites
+
+8. Update the dropdown in cart summary html using the session dictionary
+<div class="row justify-content-center">
+                        <div class="col-md-2">
+                            Quantity:
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-select form-select-sm" id="qty-cart">
+
+                                    {% for key, value in quantities.items %}
+                                        {% if key == product.id|slugify %} Slugify makes the integer into string
+                                            <option selected>{{ value }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                            </select>
+                        </div>
+                    </div>
+
+
+
+
+
+
+
+
+
+
+

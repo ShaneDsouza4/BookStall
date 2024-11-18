@@ -1,6 +1,8 @@
 from http.client import responses
 
 from django.shortcuts import render, get_object_or_404, redirect
+
+from store.views import product
 from .cart import Cart #Cart Session
 from store.models import Product
 from django.http import JsonResponse
@@ -11,7 +13,10 @@ def cart_summary(request):
     #Get the cart
     cart = Cart(request)
     cart_products = cart.get_prods
-    return render(request, "cart_summary.html", {"cart_products":cart_products})
+
+    quantities = cart.get_quants
+
+    return render(request, "cart_summary.html", {"cart_products":cart_products, "quantities":quantities})
 
 def cart_add(request):
     # Get the cart
@@ -22,12 +27,13 @@ def cart_add(request):
 
         #Get stuff from AJAX
         product_id = int(request.POST.get('product_id'))
+        product_qty = int(request.POST.get('product_qty'))
 
         #Search product in DB
         product = get_object_or_404(Product, id=product_id)
 
         #Save to session
-        cart.add(product=product) #Whole model object will be added
+        cart.add(product=product, quantity=product_qty) #Whole model object will be added
 
         #Get cart quantity
         cart_quantity = cart.__len__()

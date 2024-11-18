@@ -18,15 +18,16 @@ class Cart():
         self.cart = cart
 
     #Add functionality
-    def add(self, product):
+    def add(self, product, quantity):
         product_id = str(product.id)
+        product_qty = str(quantity)
 
         #Logic
         if product_id in self.cart:
             pass
         else:
-            self.cart[product_id] = {'price': str(product.price)} #Will be added in session when decoded
-
+            #self.cart[product_id] = {'price': str(product.price)} #Will be added in session when decoded
+            self.cart[product_id] = int(product_qty)
         self.session.modified = True
 
     #Filter the length
@@ -43,5 +44,7 @@ class Cart():
         products = Product.objects.filter(id__in=product_ids)
         return products
 
-
-
+    # Return cart for quantities
+    def get_quants(self):
+        quantitites = self.cart
+        return quantitites
