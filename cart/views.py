@@ -47,4 +47,21 @@ def cart_delete(request):
     pass
 
 def cart_update(request):
-    pass
+    #Instance of cart
+    cart = Cart(request)
+
+    if request.POST.get('action') == 'post':  # Lower case post is mentioned in the Ajax action
+        # Get stuff from AJAX
+        product_id = int(request.POST.get('product_id'))
+        product_qty = int(request.POST.get('product_qty'))
+
+        # Fetch the Product instance
+        product = get_object_or_404(Product, id=product_id)
+
+        #Update cart
+        cart.update(product=product, quantity=product_qty)
+
+        #Return Response
+        response = JsonResponse({"qty": product_qty}) #Passing qty to get response
+        return response
+

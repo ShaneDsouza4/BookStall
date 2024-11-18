@@ -48,3 +48,28 @@ class Cart():
     def get_quants(self):
         quantitites = self.cart
         return quantitites
+
+    #Product and qty and parameters sent in the view
+    def update(self, product, quantity):
+
+        #Add as string because of the dictionary {"3":4}
+        product_id = str(product.id)
+        product_qty = int(quantity)
+
+        #Update session process
+        # Get cart
+        ourcart = self.cart
+
+        #Update dictionary/cart
+        #Find the key and change to the quantity we have
+        ourcart[product_id] = product_qty
+
+        # Modify the cart session
+        self.session.modified = True
+
+        # New updated cart
+        thing = self.cart
+        return thing
+
+
+

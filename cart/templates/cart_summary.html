@@ -48,7 +48,7 @@
                             Quantity:
                         </div>
                         <div class="col-md-2">
-                            <select class="form-select form-select-sm" id="qty-cart">
+                            <select class="form-select form-select-sm" id="select{{ product.id }}">
 
                                     {% for key, value in quantities.items %}
                                         {% if key == product.id|slugify %}
@@ -67,6 +67,7 @@
 
 
                         <a href="{% url 'home' %}" class="btn btn-secondary">Home</a>
+                        <button class="btn btn-secondary update-cart" type="button" data-index="{{ product.id }}" >Update</button>
 
                     </center>
 
@@ -84,4 +85,35 @@
 
         </div>
 
+
+
+
+    <script>
+    //Check if button is pressed
+    $(document).on('click', '.update-cart', function(e){
+        //Check button was actually pressed
+        e.preventDefault();
+
+        //Grab the product ID
+        var productid = $(this).data('index');
+
+        //Ajax will allow to send to backend, without refreshing page
+        $.ajax({
+            type: 'POST',
+            url: '{% url 'cart_update' %}', <!--Calls cart_update url-->
+            data: {
+                product_id: $(this).data('index'), <!--Calls prodcut id via data index-->
+                product_qty: $('#select' + productid).val(), <!--Calling the id we added in select above-->
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                action: 'post'
+            },
+            success: function(json){
+                location.reload();
+            },
+            error: function (xhr, errmsg, err){
+
+            }
+        })
+    })
+    </script>
 {% endblock %}

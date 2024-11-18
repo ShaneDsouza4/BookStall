@@ -1,0 +1,113 @@
+1. Add button in cart summary HTML
+
+- Use product.id to distinguish the button amongst products. Index number is unique
+
+<button class="btn btn-secondary update-cart" type="button" data-index="{{ product.id }}" >Update</button>
+
+2. Use
+
+- View page source to see the page-index in the HTML
+
+
+2. Give select boxes an id in cart summary
+<select class="form-select form-select-sm" id="select{{ product.id }}">
+
+- view page source, should see;
+<select class="form-select form-select-sm" id="select3">
+<button class="btn btn-secondary update-cart" type="button" data-index="3" >Update</button>
+
+The 3 is the product ID
+
+3. Add script in product_summary
+<script>
+    //Check if button is pressed
+    $(document).on('click', '.update-cart', function(e){
+        //Check button was actually pressed
+        e.preventDefault();
+
+        //Grab the product ID
+        var productid = $(this).data('index');
+
+        //Ajax will allow to send to backend, without refreshing page
+        $.ajax({
+            type: 'POST',
+            url: '{% url 'cart_update' %}', <!--Calls cart_update url-->
+            data: {
+                product_id: $(this).data('index'), <!--Calls prodcut id via data index-->
+                product_qty: $('#select' + productid).val(), <!--Calling the id we added in select above-->
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                action: 'post'
+            },
+            success: function(json){
+                location.reload();
+            },
+            error: function (xhr, errmsg, err){
+
+            }
+        })
+    })
+    </script>
+
+
+4. Update the views where cart_update is called
+def cart_update(request):
+    #Instance of cart
+    cart = Cart(request)
+
+    if request.POST.get('action') == 'post':  # Lower case post is mentioned in the Ajax action
+        # Get stuff from AJAX
+        product_id = int(request.POST.get('product_id'))
+        product_qty = int(request.POST.get('product_qty'))
+
+        # Fetch the Product instance
+        product = get_object_or_404(Product, id=product_id)
+
+        #Update cart
+        cart.update(product=product, quantity=product_qty)
+
+        #Return Response
+        response = JsonResponse({"qty": product_qty}) #Passing qty to get response
+        return response
+
+
+5. Create the function in cart.py file
+#Product and qty and parameters sent in the view
+     def update(self, product, quantity):
+
+        #Add as string because of the dictionary {"3":4}
+        product_id = str(product.id)
+        product_qty = int(quantity)
+
+        #Update session process
+        # Get cart
+        ourcart = self.cart
+
+        #Update dictionary/cart
+        #Find the key and change to the quantity we have
+        ourcart[product_id] = product_qty
+
+        # Modify the cart session
+        self.session.modified = True
+
+        # New updated cart
+        thing = self.cart
+        return thing
+
+
+
+6. Test it out by deleting the session and starting over
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
