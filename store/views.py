@@ -82,3 +82,9 @@ def category(request, foo):
     except:
         messages.success(request, 'Category does not exist')
         return redirect('home')
+
+def category_summary(request):
+    # Fetch all categories
+    categories = Category.objects.all()
+
+    return render(request, 'category_summary.html', {"categories": categories})

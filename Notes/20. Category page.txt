@@ -1,0 +1,44 @@
+- All Categories
+
+
+1. Add path in urls.py
+ path('category_summary', views.category_summary, name='category_summary'),
+
+2. Create view category_summary 
+def category_summary(request):
+    return render(request, 'category_summary.html', {})
+
+3. Create the catergory_summary.HTML
+Copy about.html
+
+4. Update navbar.html
+<li><a class="dropdown-item" href="{% url 'category_summary' %}">All Categories</a></li>
+
+5. Grab categories from DB and pass context in views
+
+def category_summary(request):
+
+    # Fetch all categories
+    categories = Category.objects.all()
+    return render(request, 'category_summary.html', {"categories": categories})
+
+6. Update the category_summary HTML with the categories context passed, and use as URL
+<div class="container">
+        <div class="row">
+            <center>
+                <div class="col-8">
+                    <br/><br/><br/><br/><br/><br/><br/>
+                    {{ categories }}
+                    {% for category in categories %}
+                        <h3>
+                            <a href="{% url 'category' category %}">
+                                {{ category }}
+                            </a>
+
+                        </h3>
+                    {% endfor %}
+                    <br/><br/><br/><br/><br/><br/><br/>
+                </div>
+            </center>
+        </div>
+     </div>
