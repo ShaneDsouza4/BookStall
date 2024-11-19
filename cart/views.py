@@ -6,6 +6,7 @@ from store.views import product
 from .cart import Cart #Cart Session
 from store.models import Product
 from django.http import JsonResponse
+from django.contrib import messages
 
 
 # Create your views here.
@@ -42,6 +43,7 @@ def cart_add(request):
         #Return JSON response
         #response = JsonResponse({"Product Name ": product.name}) #Will reference Product Model name
         response = JsonResponse({"qty": cart_quantity})
+        messages.success(request, 'Product Added to cart')
         return response
 
 def cart_delete(request):
@@ -60,6 +62,7 @@ def cart_delete(request):
 
         # Return Response
         response = JsonResponse({"success":"Product Deleted"})  # Passing qty to get response
+        messages.success(request, 'Product Has Deleted From Cart')
         return response
 
 def cart_update(request):
@@ -79,5 +82,6 @@ def cart_update(request):
 
         #Return Response
         response = JsonResponse({"qty": product_qty}) #Passing qty to get response
+        messages.success(request, 'Cart Has Beeen Updated')
         return response
 

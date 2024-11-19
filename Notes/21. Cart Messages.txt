@@ -1,0 +1,21 @@
+- Add, Update, Delete message
+from django.contrib import messages
+messages.success(request, 'You are now logged in')
+
+1. Add location.reload() so message pops up in product.html
+
+success: function(json){
+                console.log(json)
+                //Update the cart_quantity
+                document.getElementById('cart_quantity').textContent = json.qty
+                location.reload()
+            },
+
+
+2. In cart view.py
+- In cart_add Add Message after the response
+
+response = JsonResponse({"qty": cart_quantity})
+messages.success(request, 'Product Added to cart')
+
+- Add messages in the relevant functions of views.py
