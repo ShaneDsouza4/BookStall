@@ -1,0 +1,43 @@
+1. At the bottom of product_summary put the total, below.
+
+-After the endfor
+<h3>Total: ${{ totals }}</h3>
+
+2. Update cart_summart in view.py
+
+def cart_summary(request):
+    #Get the cart
+    cart = Cart(request)
+    cart_products = cart.get_prods
+
+    quantities = cart.get_quants
+    totals = cart.cart_total()
+
+    return render(request, "cart_summary.html", {"cart_products":cart_products, "quantities":quantities, "totals":totals})
+
+3. Cart Total function in cart.py
+    def cart_total(self):
+
+        #Get product ids
+        product_ids = self.cart.keys()
+
+        #Lookup keys in our products db model
+        products = Product.objects.filter(id__in=product_ids)
+
+        #Get quanitites from cart
+        cart = self.cart #{'3': 4, '4':1}
+
+        #Start counting at 0
+        total = 0
+
+        # {'3': 4, '4':1}  # Value is the quantity
+        for key, value in cart.items():
+            key = int(key) #Convert key string as doing math
+            for product in products:
+                if product.id == key:
+                    if product.is_sale:
+                        total = total + (product.sale_price * value)
+                    else:
+                        total = total + (product.price * value)
+        return total
+
