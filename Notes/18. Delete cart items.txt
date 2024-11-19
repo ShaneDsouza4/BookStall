@@ -1,0 +1,62 @@
+1. Add remove button in product summary HTML
+<button class="btn btn-danger delete-product" type="button" data-index="{{ product.id }}">Delete</button>
+
+2. Add a function in script of product summary to delete item
+
+//Delete Item from Cart
+    //Check if button is pressed
+    $(document).on('click', '.delete-product', function(e){
+        //Check button was actually pressed
+        e.preventDefault();
+
+        //Ajax will allow to send to backend, without refreshing page
+        $.ajax({
+            type: 'POST',
+            url: '{% url 'cart_delete' %}', <!--Calls cart_update url-->
+            data: {
+                product_id: $(this).data('index'), <!--Calls prodcut id via data index-->
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                action: 'post'
+            },
+            success: function(json){
+                location.reload();
+            },
+            error: function (xhr, errmsg, err){
+
+            }
+        })
+    })
+
+2. Update the cart_delete in views.py
+def cart_delete(request):
+    # Instance of cart
+    cart = Cart(request)
+
+    if request.POST.get('action') == 'post':  # Lower case post is mentioned in the Ajax action
+        # Get stuff from AJAX
+        product_id = int(request.POST.get('product_id'))
+
+        # Fetch the Product instance
+        product = get_object_or_404(Product, id=product_id)
+
+        # Update cart
+        cart.delete(product=product)
+
+        # Return Response
+        response = JsonResponse({"success":"Product Deleted"})  # Passing qty to get response
+        return response
+
+3. Delete function in cart.py
+    def delete(self, product):
+        #Get product ID
+        product_id = str(product.id) #str because of {'3': 4}
+
+        #Update the dictionary
+        #Delete from dictionary
+        if product_id  in self.cart:
+            del self.cart[product_id] #Delete if the product id is there
+
+            #Update the session
+            self.session.modified = True
+
+

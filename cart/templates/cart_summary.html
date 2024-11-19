@@ -68,6 +68,7 @@
 
                         <a href="{% url 'home' %}" class="btn btn-secondary">Home</a>
                         <button class="btn btn-secondary update-cart" type="button" data-index="{{ product.id }}" >Update</button>
+                        <button class="btn btn-danger delete-product" type="button" data-index="{{ product.id }}">Delete</button>
 
                     </center>
 
@@ -89,6 +90,8 @@
 
 
     <script>
+
+    //Update Cart
     //Check if button is pressed
     $(document).on('click', '.update-cart', function(e){
         //Check button was actually pressed
@@ -104,6 +107,32 @@
             data: {
                 product_id: $(this).data('index'), <!--Calls prodcut id via data index-->
                 product_qty: $('#select' + productid).val(), <!--Calling the id we added in select above-->
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                action: 'post'
+            },
+            success: function(json){
+                location.reload();
+            },
+            error: function (xhr, errmsg, err){
+
+            }
+        })
+    })
+
+
+
+    //Delete Item from Cart
+    //Check if button is pressed
+    $(document).on('click', '.delete-product', function(e){
+        //Check button was actually pressed
+        e.preventDefault();
+
+        //Ajax will allow to send to backend, without refreshing page
+        $.ajax({
+            type: 'POST',
+            url: '{% url 'cart_delete' %}', <!--Calls cart_update url-->
+            data: {
+                product_id: $(this).data('index'), <!--Calls prodcut id via data index-->
                 csrfmiddlewaretoken: '{{ csrf_token }}',
                 action: 'post'
             },
