@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm, SetPasswordForm
 from django import forms
 
 class SignUpForm(UserCreationForm):
@@ -26,3 +26,16 @@ class UpdateUserForm(UserChangeForm):
         model = User
         fields = ('username', 'first_name', 'last_name')
 
+
+class ChangePasswordForm(SetPasswordForm):
+    class Meta:
+        model = User
+
+        fields = ['new_password1', 'new_password2']
+
+    def __init__(self, *args, **kwargs):
+        super(ChangePasswordForm, self).__init__(*args, **kwargs)
+        self.fields['new_password1'].widget.attrs.update({'class': 'form-control'})
+        self.fields['new_password2'].widget.attrs.update({'class': 'form-control'})
+        self.fields['new_password1'].help_text = None
+        self.fields['new_password2'].help_text = None

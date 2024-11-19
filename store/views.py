@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
-from .forms import SignUpForm, UpdateUserForm
+from .forms import SignUpForm, UpdateUserForm, ChangePasswordForm
 
 # Create your views here.
 def home(request):
@@ -107,5 +107,33 @@ def update_user(request):
         #ELse they are going to the page to edit
         return render(request, 'update_user.html', {'user_form': user_form})
     else: #If user is not logged in
+        messages.success(request, 'You must be logged in to access this page')
+        return redirect('home')
+
+
+def update_password(request):
+    #User is logged in
+    if request.user.is_authenticated:
+        current_user = request.user
+
+        #Did the fill out the form
+        if request.method == 'POST':
+            # User filled form and Posted
+            form = ChangePasswordForm(current_user, request.POST)
+
+            #Check if the form is valid
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'Your password has been updated!')
+                login(request, current_user)
+                return redirect('update_user')
+            else:
+                for error in list(form.errors.values()):
+                    messages.error(request, error)
+                    return redirect('update_password')
+        else:
+            form = ChangePasswordForm(current_user)
+            return render(request, "update_password.html", {"form":form})
+    else: #Not logged in
         messages.success(request, 'You must be logged in to access this page')
         return redirect('home')
