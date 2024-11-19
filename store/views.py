@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect
-from .models import Product, Category
+from .models import Product, Category, Profile
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
-from .forms import SignUpForm, UpdateUserForm, ChangePasswordForm
+from .forms import SignUpForm, UpdateUserForm, ChangePasswordForm, UserInfoForm
+from django.db.models import Q
 
 # Create your views here.
 def home(request):
@@ -110,7 +111,6 @@ def update_user(request):
         messages.success(request, 'You must be logged in to access this page')
         return redirect('home')
 
-
 def update_password(request):
     #User is logged in
     if request.user.is_authenticated:
@@ -137,3 +137,41 @@ def update_password(request):
     else: #Not logged in
         messages.success(request, 'You must be logged in to access this page')
         return redirect('home')
+
+def update_info(request):
+    if request.user.is_authenticated:
+        #Search Profile
+        current_user = Profile.objects.get(user__id=request.user.id)
+
+        # If they are posting, or use their current instance
+        form = UserInfoForm(request.POST or None, instance=current_user) #Want to be in the profile
+
+        # THey filled the form
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your info has been updated!')
+            return redirect('home')
+
+        # ELse they are going to the page to edit
+        return render(request, 'update_info.html', {'user_form': form})
+    else:  # If user is not logged in
+        messages.success(request, 'You must be logged in to access this page')
+        return redirect('home')
+
+def search(request):
+    #Determine if form is filled and submitted
+    if request.method == 'POST':
+        #Grab what they typed and assign to variable
+        searched = request.POST['searched']
+
+        #Query DB Product
+        searched = Product.objects.filter(Q(name__icontains=searched) | Q(description__icontains=searched) )
+
+        #Check if null
+        if not searched:
+            messages.success(request, 'That Product Does Not Exist. Please Try Again')
+            return render(request, 'search.html', {})
+        else:
+            return render(request, 'search.html', {"searched":searched})
+    else:
+        return render(request, 'search.html', {})

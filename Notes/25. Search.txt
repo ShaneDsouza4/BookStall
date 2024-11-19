@@ -1,0 +1,76 @@
+1. URL for search
+path('search', views.search, name='search'),
+
+2. Create View
+def search(request):
+    return render(request, 'search.html', {})
+
+3. Create HTML template
+Copy About page
+
+4. Add to navbar
+<li class="nav-item"><a class="nav-link" href="{% url 'search' %}">Search</a></li>
+
+5. Form to add search
+Add bootstap card Header and footer
+Add bottstrao email text area form
+
+6. Views.py
+def search(request):
+    #Determine if form is filled and submitted
+    if request.method == 'POST':
+        #Grab what they typed and assign to variable
+        searched = request.POST['searched']
+        return render(request, 'search.html', {'searched': searched})
+    else:
+        return render(request, 'search.html', {})
+
+7. Add logic in the search HTML
+{% if searched %}
+                    You searched for {{ searched }}
+                    <br/><br/>
+                {% endif %}
+
+8. Query DB in views.py
+def search(request):
+    #Determine if form is filled and submitted
+    if request.method == 'POST':
+        #Grab what they typed and assign to variable
+        searched = request.POST['searched']
+
+        #Query DB Product
+        searched = Product.objects.filter(name__icontains=searched)
+
+	#Check if null
+        if not searched:
+            messages.success(request, 'That Product Does Not Exist. Please Try Again')
+            return render(request, 'search.html', {})
+        else:
+            return render(request, 'search.html', {"searched":searched})
+    else:
+        return render(request, 'search.html', {})
+
+
+9. Modify the HTML
+{% if searched %}
+                    {% for product in searched %}
+                        {{ product }} <br/>
+                    {% endfor %}
+                {% endif %}
+
+
+10. Add category html for products to be purchased
+
+
+
+
+11. Query multiple items
+searched = Product.objects.filter(Q(name__icontains=searched) | Q(description__icontains=searched) )
+
+
+
+
+
+
+
+
